@@ -1,0 +1,58 @@
+module alu_tb;
+
+    reg [7:0] InputA;
+    reg [7:0] InputB;
+    reg [2:0] OpCode;
+    wire [15:0] OutALU;
+    wire COut;
+
+    // Instantiate the ALU module
+    alu uut (
+        .InputA(InputA),
+        .InputB(InputB),
+        .OpCode(OpCode),
+        .OutALU(OutALU),
+        .COut(COut)
+    );
+
+    initial begin
+        // Display header and monitor changes
+        $display("--------------------------------------------------------------------------------");
+        $display("TIME\t\tOpCode\tInputA\tInputB\tOutALU\t\tCOut");
+        $display("--------------------------------------------------------------------------------");
+        $dumpfile("dump.vcd");
+        $dumpvars(0, alu_tb);
+
+        // Your existing monitor and test cases...
+        $display("--------------------------------------------------------------------------------");
+        $monitor("%0t ns\t%b\t%0d\t%0d\t%0d\t\t%b", 
+                 $time, OpCode, InputA, InputB, OutALU, COut);
+
+        // --- Case 1 ---
+        // InputA = 45, InputB = 38. Test opcodes: 000, 001, 110, 111
+        InputA = 8'd45;
+        InputB = 8'd38;
+
+        #10 OpCode = 3'b000; // Addition
+        #10 OpCode = 3'b001; // Subtraction
+        #10 OpCode = 3'b110; // Logical OR
+        #10 OpCode = 3'b111; // Logical XOR
+
+        #10;
+        
+        // --- Case 2 ---
+        // InputA = 49, InputB = 10. Test opcodes: 010, 011, 100, 101
+        InputA = 8'd49;
+        InputB = 8'd10;
+
+        #10 OpCode = 3'b010; // Multiplication
+        #10 OpCode = 3'b011; // Left Shift
+        #10 OpCode = 3'b100; // Right Shift
+        #10 OpCode = 3'b101; // Logical AND
+
+        #10;
+        $display("--------------------------------------------------------------------------------");
+        $finish;
+    end
+
+endmodule
